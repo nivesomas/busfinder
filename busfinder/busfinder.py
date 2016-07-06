@@ -13,6 +13,7 @@ GMAPS_KEY = "AIzaSyAakxt7yFSijY2r7alEHtZKBww2j0E0hMA"
 NEXT_BUS_REST_QUERY = "http://webservices.nextbus.com/service/publicXMLFeed?command=vehicleLocations&a=sf-muni&t=0"
 
 
+
 class Vehicle:
   def __init__(self, curr_lon, curr_lat, route_name, dist_from_ref):
     self.curr_lon = curr_lon
@@ -23,11 +24,18 @@ class Vehicle:
   def print_vehicle(self):
     print ("%s\t | %s\t | %s\t |%s\t |" %(self.route_name, self.curr_lat, self.curr_lon, self.dist_from_ref))
 
+  @classmethod
+  def delete_table_from_db(cls):
+    dbid = _mysql.connect("localhost","root","","mysql")
+    dbid.query("delete from nearestbuses")
+    dbid.commit()
+    dbid.close()
+
   def add_vehicle_to_db(self):
     dbid = _mysql.connect("localhost","root","","mysql")
     #curs = dbid.cursor()
     try:
-      dbid.query("insert into NearestBuses values ('%s','%f','%f','%f')" % \
+      dbid.query("insert into nearestbuses values ('%s','%f','%f','%f')" % \
                    (self.route_name, self.curr_lat, self.curr_lon, self.dist_from_ref))
       dbid.commit()
     except:
@@ -60,6 +68,7 @@ class BusFinder:
     self.__get_bus_locations() 
     self.__compute_distances()
     self.__print_tabular_header()
+    Vehicle.delete_table_from_db()
     self.sorted_bus_map = sorted(self.bus_map.values(), key=operator.attrgetter('dist_from_ref'))
     
     for index, vehicle in enumerate(self.sorted_bus_map):
