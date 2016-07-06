@@ -4,6 +4,7 @@ import os
 import requests
 import operator
 import xml.etree.ElementTree as ET
+import _mysql
 from geopy import geocoders
 from geopy.distance import great_circle
 from geopy.distance import vincenty
@@ -21,7 +22,18 @@ class Vehicle:
     
   def print_vehicle(self):
     print ("%s\t | %s\t | %s\t |%s\t |" %(self.route_name, self.curr_lat, self.curr_lon, self.dist_from_ref))
-    
+
+  def add_vehicle_to_db(self):
+    dbid = _mysql.connect("localhost","root","","mysql")
+    #curs = dbid.cursor()
+    try:
+      dbid.query("insert into NearestBuses values ('%s','%f','%f','%f')" % \
+                   (self.route_name, self.curr_lat, self.curr_lon, self.dist_from_ref))
+      dbid.commit()
+    except:
+      dbid.rollback()
+      dbid.close()
+
   def compute_dist_from_ref(self, ref_lat, ref_lon):
     ref_coord = (ref_lat, ref_lon) # (lat, lon)
     bus_coord = (self.curr_lat, self.curr_lon) # (lat, lon) 
@@ -53,6 +65,7 @@ class BusFinder:
     for index, vehicle in enumerate(self.sorted_bus_map):
       if index <= num_buses-1:
         vehicle.print_vehicle()
+        vehicle.add_vehicle_to_db()
     
     
   def __get_bus_locations(self):
