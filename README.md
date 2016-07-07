@@ -37,6 +37,6 @@ python main.py
  ===========================================
  python main.py -d
  
- The -d option makes the screipt run as a daemon. It queries NextBus every 60 seconds and stores the 
+ The -d option makes the script run as a daemon. It queries NextBus every 60 seconds and stores the 
  location info of the closest buses in a MySQL database. The database can be read by any visualization
  software like Tableau for realtime map display of the buses
