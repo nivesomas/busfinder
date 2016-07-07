@@ -15,6 +15,9 @@ NEXT_BUS_REST_QUERY = "http://webservices.nextbus.com/service/publicXMLFeed?comm
 
 
 class Vehicle:
+  """
+  	Helper class for storing Bus attributes/ DB operations
+  """
   def __init__(self, curr_lon, curr_lat, route_name, dist_from_ref):
     self.curr_lon = curr_lon
     self.curr_lat = curr_lat
@@ -48,7 +51,10 @@ class Vehicle:
     self.dist_from_ref = vincenty(ref_coord, bus_coord).meters
     
 class BusFinder:
-  
+  """
+  	Contains logic for querying REST APIs and tabulating the 
+   locations of the nearest buses to a specified location.
+  """
   def __init__(self, address):
     self.ref_address = address
     self.bus_map = dict()
