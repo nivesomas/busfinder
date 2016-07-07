@@ -19,7 +19,7 @@ def run_main(argv):
   if len(sys.argv) > 1 and sys.argv[1] == '-d':
     while True :
       bus_find_obj.get_nearest(10)
-      time.sleep(30)
+      time.sleep(60)
   else:
     bus_find_obj.get_nearest(10)
 
